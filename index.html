@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weapons List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weapons List</h1>
+    <table id="weaponsTable">
+        <thead>
+            <tr>
+                <th>ItemId</th>
+                <th>QualityId</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be added here by JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        async function loadWeapons() {
+            try {
+                const response = await fetch('filtered_weapons.json');
+                const data = await response.json();
+                
+                const tableBody = document.querySelector('#weaponsTable tbody');
+                
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    
+                    const itemIdCell = document.createElement('td');
+                    itemIdCell.textContent = item.ItemId;
+                    row.appendChild(itemIdCell);
+                    
+                    const qualityIdCell = document.createElement('td');
+                    qualityIdCell.textContent = item.QualityId;
+                    row.appendChild(qualityIdCell);
+                    
+                    const actionCell = document.createElement('td');
+                    const copyButton = document.createElement('button');
+                    copyButton.textContent = 'Copy ItemId';
+                    copyButton.onclick = () => {
+                        navigator.clipboard.writeText(item.ItemId)
+                            .then(() => alert('ItemId copied to clipboard!'))
+                            .catch(err => console.error('Failed to copy: ', err));
+                    };
+                    actionCell.appendChild(copyButton);
+                    row.appendChild(actionCell);
+                    
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading JSON:', error);
+            }
+        }
+
+        window.onload = loadWeapons;
+    </script>
+</body>
+</html>
